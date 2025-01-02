@@ -1,0 +1,56 @@
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# User-specific files for Visual Studio for Mac
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer Package
+*.installshield
+
+# Windows Installer Logs
+*.cab
+
+# Windows Installer Temp Files
+*.swp
+
+# Windows Installer Files
+*.nupkg
+*.pkg
+*.tar.gz
+*.zip
+*.tar.bz2
+
+# .NET Core build outputs
+bin/
+obj/
+out/
+
+# ASP.NET Core temporary files
+wwwroot/
+
+# Windows Installer files
+*.bak
+
+# .vs folder (used by Visual Studio)
+.vs/
+
+# Microsoft Azure Web App publish folder
+Publish/
+
+# JetBrains Rider
+.idea/
+
+# DotCover
+.idea/.idea.DotCover/
+
+# .NET Core tools
+.dotnet/
