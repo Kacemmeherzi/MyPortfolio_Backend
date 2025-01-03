@@ -33,6 +33,8 @@
 bin/
 obj/
 out/
+#migrations folder 
+/migrations
 
 # ASP.NET Core temporary files
 wwwroot/
