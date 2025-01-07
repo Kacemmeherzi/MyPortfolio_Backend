@@ -2,9 +2,9 @@ using myportfolio.Models;
 
 public interface IUserService
 {
-    List<User> GetAllUsers();
-    User GetUserById(int id);
-    User AddUser(User user);
-    User UpdateUser(int id, User user);
-    User DeleteUser(int id);
+    Task<List<User>> GetAllUsers();
+    Task<User> GetUserById(int id);
+    Task<User>AddUser(User user);
+    Task<User> UpdateUser(int id, User user);
+    Task<User> DeleteUser(int id);
 }
