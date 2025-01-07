@@ -1,3 +1,6 @@
+using System.Net;
+using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using myportfolio.Models;
 
@@ -9,28 +12,49 @@ public UserService(DbContext dbContext){
     this.dbContext = dbContext;
 }
 
-    public void AddUser(User user)
+    public User AddUser(User user)
     {
-        throw new NotImplementedException();
+        dbContext.Add(user);
+        dbContext.SaveChanges();
+        return user;}
+
+    public User DeleteUser(int id)
+    {
+        User user = GetUserById(id);
+        dbContext.Remove(GetUserById(id));
+        dbContext.SaveChanges();
+        return user;
+
     }
 
-    public void DeleteUser(int id)
+    public List<User> GetAllUsers()
     {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<User> GetAllUsers()
-    {
-        throw new NotImplementedException();
+        List<User>users =  dbContext.Set<User>().ToList();
+        return users;
     }
 
     public User GetUserById(int id)
     {
-        throw new NotImplementedException();
+        var user = dbContext.Set<User>().Find(id);
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+        return user;
     }
 
-    public void UpdateUser(int id, User user)
+    public User UpdateUser(int id, User user)
     {
-        throw new NotImplementedException();
-    }
+        var userToUpdate = GetUserById(id);
+        foreach (var prop in user.GetType().GetProperties())
+        {
+            var value = prop.GetValue(user);
+            if (value != null)
+            {
+                prop.SetValue(userToUpdate, value);
+            }
+        }
+
+         dbContext.SaveChanges();
+        return userToUpdate;}
 }
