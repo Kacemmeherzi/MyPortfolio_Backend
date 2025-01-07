@@ -7,41 +7,42 @@ namespace myportfolio.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUserService userService;
 
         public UsersController(ApplicationDbContext context)
         {
-            _context = context;
+                userService = new UserService(context);
         }
 
         // CREATE
         [HttpPost("create")] 
         public async Task<ActionResult<User>> CreateUser(User user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            User createdUser = await userService.AddUser(user);
+            return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
         }
 
-        // READ
+        // READe
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<List<User>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await  userService.GetAllUsers();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
+            try
             {
-                return NotFound();
+                var user = await userService.GetUserById(id);
+                return user;
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
             }
 
-            return user;
-        }
+            }
 
         // UPDATE
         [HttpPut("{id}")]
@@ -51,42 +52,33 @@ namespace myportfolio.Controllers
             {
                 return BadRequest();
             }
-
-            _context.Entry(user).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+            User updatedUser =     await userService.UpdateUser(id, user);
+            return Ok(updatedUser);
+                
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
-                if (!_context.Users.Any(e => e.Id == id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound(e.Message);
             }
+           
 
-            return NoContent();
         }
 
         // DELETE
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            try
             {
-                return NotFound();
+                User deletedUser = await userService.DeleteUser(id);
+                return Ok(deletedUser);
             }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
         }
     }
 }
