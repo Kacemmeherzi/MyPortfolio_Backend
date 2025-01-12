@@ -1,6 +1,6 @@
 public class UserLogin {
-    private string email ; 
-    private string password ;
+    private string? email ; 
+    private string? password ;
 
  public string Email
     {
