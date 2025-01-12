@@ -10,13 +10,21 @@ public class TokenService : ITokenService
 
     public TokenService(IConfiguration configuration)
     {
-        _configuration = configuration;
+        _configuration = configuration  ; 
     }
-
+    private string? getSecret()
+    {
+        var secret =  _configuration.GetSection("SecretKey").Value;
+        if (string.IsNullOrEmpty(secret))
+        {
+            throw new Exception("Secret is not set");
+        }
+        return secret;
+    }
     public Task<string> GenerateToken(User user)
     {
           var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:SecretKey"]!);
+            var key = Encoding.ASCII.GetBytes(getSecret()!);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
