@@ -8,7 +8,7 @@ public AuthService(ITokenService tokenService, IUserService userService){
     _tokenService = tokenService;
     _userService = userService;
 }
-    public async Task<string> Login(UserLogin userLogin)
+    public async Task<LoginResponse> Login(UserLogin userLogin)
     {
         try {
             User user = await _userService.FindByEmail(userLogin.Email);
@@ -19,9 +19,19 @@ public AuthService(ITokenService tokenService, IUserService userService){
 
             if (user.Password == userLogin.Password)
             {
-                return await _tokenService.GenerateToken(user);
-            }
-            throw new Exception("Invalid password");
+                var token =  await _tokenService.GenerateToken(user) ; 
+                return new LoginResponse
+                {
+                    message = "Login successful",
+                    Token = token,
+                    User = user,
+                    Succes = true
+                };
+            } else {
+                return new LoginResponse
+                {
+                    message = "Email or Password is invalid",Succes=false  };}
+            
         } catch (Exception ex) {
             throw new Exception($"Login failed: {ex.Message}");
         }
