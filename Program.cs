@@ -38,6 +38,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Add services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 var app = builder.Build();
 
 // Map controllers
