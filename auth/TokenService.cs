@@ -14,7 +14,7 @@ public class TokenService : ITokenService
     }
     private string? getSecret()
     {
-        var secret =  _configuration.GetSection("SecretKey").Value;
+        var secret =  _configuration.GetSection("Jwt:SecretKey").Value;
         if (string.IsNullOrEmpty(secret))
         {
             throw new Exception("Secret is not set");
