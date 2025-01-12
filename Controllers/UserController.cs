@@ -48,12 +48,9 @@ namespace myportfolio.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, User user)
         {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
             try
             {
+                
             User updatedUser =     await userService.UpdateUser(id, user);
             return Ok(updatedUser);
                 
