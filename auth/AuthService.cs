@@ -11,14 +11,19 @@ public AuthService(ITokenService tokenService, IUserService userService){
     public async Task<string> Login(UserLogin userLogin)
     {
         try {
-            var user = await _userService.FindByEmail(userLogin.Email);
+            User user = await _userService.FindByEmail(userLogin.Email);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
             if (user.Password == userLogin.Password)
             {
                 return await _tokenService.GenerateToken(user);
             }
             throw new Exception("Invalid password");
-        } catch (Exception) {
-            throw new Exception("User not found");
+        } catch (Exception ex) {
+            throw new Exception($"Login failed: {ex.Message}");
         }
     }
 
