@@ -1,19 +1,18 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using myportfolio.Models;
 
 public class UserService : IUserService 
 {
-    private readonly DbContext dbContext; 
+    private readonly ApplicationDbContext dbContext; 
 
-    public UserService(DbContext dbContext)
+    public UserService(ApplicationDbContext dbContext)
     {
         this.dbContext = dbContext;
     }
 
     public async Task<User> AddUser(User user)
     {
-        dbContext.Add(user);
+        dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync();
         return user;
     }
