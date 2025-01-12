@@ -24,7 +24,7 @@ public class UserService : IUserService
         {
             throw new KeyNotFoundException("User not found");
         }
-        dbContext.Remove(user);
+        dbContext.Users.Remove(user);
         await dbContext.SaveChangesAsync();
         return user;
     }
@@ -45,12 +45,12 @@ public class UserService : IUserService
 
     public async Task<List<User>> GetAllUsers()
     {
-        return await dbContext.Set<User>().ToListAsync();
+        return await dbContext.Users.ToListAsync();
     }
 
     public async Task<User> GetUserById(int id)
     {
-        var user = await dbContext.Set<User>().FindAsync(id);
+        var user = await dbContext.Users.FindAsync(id);
         if (user == null)
         {
             throw new KeyNotFoundException("User not found");
@@ -81,7 +81,7 @@ public class UserService : IUserService
             property.SetValue(userToUpdate, newValue);
         }
 
-        dbContext.Update(userToUpdate);
+        dbContext.Users.Update(userToUpdate);
         await dbContext.SaveChangesAsync();
         return userToUpdate;
     }
