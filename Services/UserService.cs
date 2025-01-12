@@ -1,63 +1,75 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using myportfolio.Models;
 
 public class UserService : IUserService 
 {
+    private readonly DbContext dbContext; 
 
-private readonly DbContext dbContext ; 
-public UserService(DbContext dbContext){
-    this.dbContext = dbContext;
-}
+    public UserService(DbContext dbContext)
+    {
+        this.dbContext = dbContext;
+    }
 
     public async Task<User> AddUser(User user)
     {
-         dbContext.Add(user);
-         await dbContext.SaveChangesAsync();
-         return user;
+        dbContext.Add(user);
+        await dbContext.SaveChangesAsync();
+        return user;
     }
 
     public async Task<User> DeleteUser(int id)
     {
-        User user =  await GetUserById(id);
-        dbContext.Remove(GetUserById(id));
-        dbContext.SaveChanges();
+        var user = await GetUserById(id);
+        if (user == null)
+        {
+            throw new KeyNotFoundException("User not found");
+        }
+        dbContext.Remove(user);
+        await dbContext.SaveChangesAsync();
         return user;
-
     }
 
     public async Task<List<User>> GetAllUsers()
     {
-        List<User> users = await dbContext.Set<User>().ToListAsync();
-        return users;
+        return await dbContext.Set<User>().ToListAsync();
     }
 
     public async Task<User> GetUserById(int id)
-    { 
-        try
-        {
-            var user = await dbContext.Set<User>().FindAsync(id);
-            return user!;
-        }
-        catch (Exception)
+    {
+        var user = await dbContext.Set<User>().FindAsync(id);
+        if (user == null)
         {
             throw new KeyNotFoundException("User not found");
         }
-       
+        return user;
     }
 
     public async Task<User> UpdateUser(int id, User user)
     {
-        try
+        var userToUpdate = await GetUserById(id);
+        if (userToUpdate == null)
         {
-            var usertoupdate = await GetUserById(id);
-        }
-        catch (Exception)
-        {
-            throw new KeyNotFoundException("User not found");
+            throw new KeyNotFoundException("User not found in the database");
         }
 
-        dbContext.Entry(user).State = EntityState.Modified;
+        foreach (var property in typeof(User).GetProperties())
+        {
+            if (property.Name == nameof(User.Id))
+            {
+                continue;
+            }
+
+            var newValue = property.GetValue(user);
+            if (newValue == null || newValue.ToString() == string.Empty)
+            {
+                continue;
+            }
+            property.SetValue(userToUpdate, newValue);
+        }
+
+        dbContext.Update(userToUpdate);
         await dbContext.SaveChangesAsync();
-        return user;
+        return userToUpdate;
     }
 }
