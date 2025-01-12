@@ -29,6 +29,20 @@ public class UserService : IUserService
         return user;
     }
 
+    public async Task<User> FindByEmail(string email)
+    {
+        try {
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found");
+            }
+            return user;
+        } catch (Exception) {
+            throw new Exception("User not found");
+        }
+    }
+
     public async Task<List<User>> GetAllUsers()
     {
         return await dbContext.Set<User>().ToListAsync();
