@@ -17,10 +17,3 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
-
-## Contact
-
-If you have any questions or feedback, please reach out to us at [your-email@example.com].
-
-Enjoy using MyPortfolio!
-
